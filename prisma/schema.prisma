@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+}
+
+model accounts {
+  userId                   String
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String?
+  refresh_token_expires_in Int?
+  access_token             String?
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String?
+  session_state            String?
+  oauth_token_secret       String?
+  oauth_token              String?
+  users                    users   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "accounts_userId_users_id_fk")
+
+  @@id([provider, providerAccountId], map: "accounts_provider_providerAccountId_pk")
+  @@index([userId], map: "accounts_userId_index")
+}
+
+model examples {
+  id            Int     @id @default(autoincrement())
+  name          String?
+  description   String?
+  domainCount   Int?
+  url           String?
+  image         String?
+  imageBlurhash String?
+}
+
+model posts {
+  id            String   @id
+  title         String?
+  description   String?
+  content       String?
+  slug          String
+  image         String?  @default("https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/hxfcV5V-eInX3jbVUhjAt1suB7zB88uGd1j20b.png")
+  imageBlurhash String?  @default("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAhCAYAAACbffiEAAAACXBIWXMAABYlAAAWJQFJUiTwAAABfUlEQVR4nN3XyZLDIAwE0Pz/v3q3r55JDlSBplsIEI49h76k4opexCK/juP4eXjOT149f2Tf9ySPgcjCc7kdpBTgDPKByKK2bTPFEdMO0RDrusJ0wLRBGCIuelmWJAjkgPGDSIQEMBDCfA2CEPM80+Qwl0JkNxBimiaYGOTUlXYI60YoehzHJDEm7kxjV3whOQTD3AaCuhGKHoYhyb+CBMwjIAFz647kTqyapdV4enGINuDJMSScPmijSwjCaHeLcT77C7EC0C1ugaCTi2HYfAZANgj6Z9A8xY5eiYghDMNQBJNCWhASot0jGsSCUiHWZcSGQjaWWCDaGMOWnsCcn2QhVkRuxqqNxMSdUSElCDbp1hbNOsa6Ugxh7xXauF4DyM1m5BLtCylBXgaxvPXVwEoOBjeIFVODtW74oj1yBQah3E8tyz3SkpolKS9Geo9YMD1QJR1Go4oJkgO1pgbNZq0AOUPChyjvh7vlXaQa+X1UXwKxgHokB2XPxbX+AnijwIU4ahazAAAAAElFTkSuQmCC")
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime @db.Timestamp(6)
+  published     Boolean  @default(false)
+  siteId        String?
+  userId        String?
+  sites         sites?   @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "posts_siteId_sites_id_fk")
+  users         users?   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "posts_userId_users_id_fk")
+
+  @@unique([slug, siteId], map: "posts_slug_siteId_index")
+  @@index([siteId], map: "posts_siteId_index")
+  @@index([userId], map: "posts_userId_index")
+}
+
+model sessions {
+  sessionToken String   @id
+  userId       String
+  expires      DateTime @db.Timestamp(6)
+  users        users    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "sessions_userId_users_id_fk")
+
+  @@index([userId], map: "sessions_userId_index")
+}
+
+model sites {
+  id            String   @id
+  name          String?
+  description   String?
+  logo          String?  @default("https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/JRajRyC-PhBHEinQkupt02jqfKacBVHLWJq7Iy.png")
+  font          String   @default("font-cal")
+  image         String?  @default("https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/hxfcV5V-eInX3jbVUhjAt1suB7zB88uGd1j20b.png")
+  imageBlurhash String?  @default("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAhCAYAAACbffiEAAAACXBIWXMAABYlAAAWJQFJUiTwAAABfUlEQVR4nN3XyZLDIAwE0Pz/v3q3r55JDlSBplsIEI49h76k4opexCK/juP4eXjOT149f2Tf9ySPgcjCc7kdpBTgDPKByKK2bTPFEdMO0RDrusJ0wLRBGCIuelmWJAjkgPGDSIQEMBDCfA2CEPM80+Qwl0JkNxBimiaYGOTUlXYI60YoehzHJDEm7kxjV3whOQTD3AaCuhGKHoYhyb+CBMwjIAFz647kTqyapdV4enGINuDJMSScPmijSwjCaHeLcT77C7EC0C1ugaCTi2HYfAZANgj6Z9A8xY5eiYghDMNQBJNCWhASot0jGsSCUiHWZcSGQjaWWCDaGMOWnsCcn2QhVkRuxqqNxMSdUSElCDbp1hbNOsa6Ugxh7xXauF4DyM1m5BLtCylBXgaxvPXVwEoOBjeIFVODtW74oj1yBQah3E8tyz3SkpolKS9Geo9YMD1QJR1Go4oJkgO1pgbNZq0AOUPChyjvh7vlXaQa+X1UXwKxgHokB2XPxbX+AnijwIU4ahazAAAAAElFTkSuQmCC")
+  subdomain     String?  @unique(map: "sites_subdomain_unique")
+  customDomain  String?  @unique(map: "sites_customDomain_unique")
+  message404    String?  @default("Blimey! You've found a page that doesn't exist.")
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime @db.Timestamp(6)
+  userId        String?
+  posts         posts[]
+  users         users?   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "sites_userId_users_id_fk")
+
+  @@index([userId], map: "sites_userId_index")
+}
+
+model users {
+  id            String     @id
+  name          String?
+  username      String?
+  gh_username   String?
+  email         String     @unique(map: "users_email_unique")
+  emailVerified DateTime?  @db.Timestamp(6)
+  image         String?
+  role          Role @default(USER)
+  createdAt     DateTime   @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime   @db.Timestamp(6)
+  accounts      accounts[]
+  posts         posts[]
+  sessions      sessions[]
+  sites         sites[]
+}
+
+model verificationTokens {
+  identifier String
+  token      String   @unique(map: "verificationTokens_token_unique")
+  expires    DateTime @db.Timestamp(6)
+
+  @@id([identifier, token], map: "verificationTokens_identifier_token_pk")
+}
+
+enum Role {
+  ADMIN
+  USER
+}

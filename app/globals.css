@@ -25,3 +25,8 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Apply Dancing Script font wherever needed */
+.font-DancingScript {
+  font-family: 'Dancing Script', cursive;
+}

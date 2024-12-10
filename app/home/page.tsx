@@ -108,7 +108,7 @@ const InvitationEffect = () => {
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ duration: 1, delay: 0.9 }}
                         >
-                            Kepada bpk/ibu :
+                           Kepada bpk/ibu : 
                         </motion.p>
                         <motion.p
                             className="text-3xl mb-4 text-gray-900 font-bold font-DancingScript "
@@ -319,7 +319,7 @@ const InvitationEffect = () => {
                                 Save The Date
                             </h1>
                             <p className="text-lg italic">
-                                {`"Dan segala sesuatu Kami ciptakan berpasang-pasangan agar kamu
+                               {` "Dan segala sesuatu Kami ciptakan berpasang-pasangan agar kamu
                                 mengingat (kebesaran Allah)."`}
                             </p>
                             <p className="text-md mt-2">(QS. Az Zariyat: 49)</p>
@@ -464,6 +464,7 @@ const InvitationEffect = () => {
                     </div>
                 </div>
             }
+
         </motion.div>
     );
 };
